@@ -286,14 +286,12 @@ real64 centroid_3DPolygon( arraySlice1d< localIndex const > const pointsIndices,
   }
   else
   {
-    for( localIndex a=0; a<numberOfPoints; ++a )
-    {
-      GEOS_LOG_RANK( "Points: " << points[ pointsIndices[ a ] ] << " " << pointsIndices[ a ] );
-    }
+    // Local patch (2026-08-20): tolerate degenerate (pinched) faces as in
+    // pre-#3977 behavior; a zero area gives zero TPFA transmissibility.
 #if defined(GEOS_DEVICE_COMPILE)
-    GEOS_ERROR( "Null area found" );
+    GEOS_WARNING( "Null area found" );
 #else
-    GEOS_ERROR( GEOS_FMT( "Null area found : {}", area ) );
+    GEOS_WARNING( GEOS_FMT( "Null area found : {}", area ) );
 #endif
 
     return 0.0;
